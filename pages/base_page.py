@@ -1,8 +1,6 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from conftest import *
-
 
 
 class TimeoutException:
@@ -13,6 +11,24 @@ class  BasePage:
         self.driver = driver
         self.base_url = driver.url
         self.wait = WebDriverWait(driver, timeout=5)
+
+    def _text_xpath(self, text):
+        return f"//*[text()='{text}']"
+
+    def get_element(self, locator: tuple, timeout=3):
+        return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
+
+    def get_elements(self, locator: tuple, timeout=3):
+        return WebDriverWait(self.driver, timeout).until(EC.visibility_of_all_elements_located(locator))
+
+    def click(self, locator: tuple):
+        ActionChains(self.driver).move_to_element(self.get_element(locator)).pause(0.3).click().perform()
+
+    def input_value(self, locator: tuple, text: str):
+        self.get_element(locator).click()
+        self.get_element(locator).clear()
+        for l in text:
+            self.get_element(locator).send_keys(l)
 
     def open_main_page(self):
         """ Открыть страницу заданную как URL """
@@ -30,8 +46,7 @@ class  BasePage:
                 EC.presence_of_element_located((locator))
             )
         except TimeoutException:
-            print(f"Ошибка: элемент {locator} не был найден за {self.timeout} секунд.")
-            return None
+            raise AssertionError(f"Ошибка: элемент {locator} не был найден за {self.timeout} секунд.")
 
     def element_is_visible(self, locator, timeout=20):
         """ явное ожидание. Ожидаем 20 сек """

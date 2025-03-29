@@ -1,5 +1,15 @@
+import pytest
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
+
+
+@pytest.fixture
+def login_admin_ui(driver, username, password):
+        admin_page = LoginAdminPage(driver)
+        admin_page.open_admin_page()
+        admin_page.fill_form_login(username, password)
+        admin_page.click_login_button()
+        return admin_page.user_profile_is_visible()
 
 
 class LoginAdminPage(BasePage):
@@ -12,8 +22,6 @@ class LoginAdminPage(BasePage):
     LOGOUT_BUTTON = (By.ID, "nav-logout")
     PROFILE_BUTTON = (By.ID, "nav-profile")
 
-    def __init__(self, driver):
-        self.driver = driver
 
     def open_admin_page(self):
         """ Открываем страницу указанную в PATH"""
@@ -38,6 +46,3 @@ class LoginAdminPage(BasePage):
     def login_button_is_visible(self):
         self.wait_for_element(self.SUBMIT_BUTTON)
         return True
-
-
-

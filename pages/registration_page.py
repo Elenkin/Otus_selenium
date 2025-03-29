@@ -11,10 +11,8 @@ class RegisterPage(BasePage):
     PASSWORD_INPUT = (By.ID, "input-password")
     POLICY_CHECKBOX = (By.NAME, "agree")
     REGISTER_FORM_SUBMIT_BUTTON = (By.CSS_SELECTOR, "button[type='submit']")
-    LINK = (By.XPATH, "//a[contains(@href, 'account/success')]")
+    LINK_SUCCESS = (By.XPATH, "//a[contains(@href, 'account/success')]")
 
-    def __init__(self, driver):
-        self.driver = driver
 
     def open_register_page(self):
         """ Открываем страницу указанную в PATH"""
@@ -38,5 +36,5 @@ class RegisterPage(BasePage):
         actions.move_to_element(button).click().perform()
 
     def link_is_present(self):
-        self.driver.find_element(*self.LINK)
+        self.driver.find_element(*self.LINK_SUCCESS)
         return True

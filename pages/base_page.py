@@ -2,9 +2,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
+import pytest
+import uuid
+
 
 class TimeoutException:
     pass
+
+@pytest.fixture
+def generate_random_data():
+    uid = uuid.uuid4()
+    name = f"Apple " + uid.variant
+    title = uid.hex
+    model = uid.hex
+    keyword = uid.hex
+
+    # Возвращаем сгенерированные данные в виде словаря
+    return {
+        "name": name,
+        "title": title,
+        "model": model,
+        "keyword": keyword
+    }
 
 class  BasePage:
     def __init__(self, driver):

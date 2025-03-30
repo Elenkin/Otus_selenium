@@ -1,3 +1,4 @@
+import selenium
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
@@ -5,9 +6,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 import pytest
 import uuid
 
-
-class TimeoutException:
-    pass
 
 @pytest.fixture
 def generate_random_data():
@@ -64,8 +62,8 @@ class  BasePage:
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((locator))
             )
-        except TimeoutException:
-            raise AssertionError(f"Ошибка: элемент {locator} не был найден за {self.timeout} секунд.")
+        except selenium.common.exceptions.TimeoutException:
+            raise AssertionError(f"Ошибка: элемент {locator} не был найден за 20 секунд.")
 
     def element_is_visible(self, locator, timeout=20):
         """ явное ожидание. Ожидаем 20 сек """
@@ -74,5 +72,5 @@ class  BasePage:
             return wait.until(
                 EC.visibility_of_element_located(locator)
             )
-        except TimeoutException:
-            raise AssertionError(f"Не дождался видимости элемента {locator}")
+        except selenium.common.exceptions.TimeoutException:
+            raise AssertionError(f"Не дождался видимости элемента {locator} за 20 секунд")

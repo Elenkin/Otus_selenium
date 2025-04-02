@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
+import allure
 
 
 class Catalog(BasePage):
@@ -12,5 +13,6 @@ class Catalog(BasePage):
 
     def check_element_list_desktops(self):
         """ наличие в каталоге ссылки на  desktops"""
-        self.driver.find_element(*self.DESkTOPS_LIST_BUTTON).click()
-        return True
+        with allure.step(f"Проверяем наличие ссылки на список desktops в catalog"):
+            self.driver.find_element(*self.DESkTOPS_LIST_BUTTON).click()
+            return True

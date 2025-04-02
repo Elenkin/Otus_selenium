@@ -1,10 +1,11 @@
-import pytest
+import allure
 from conftest import *
 from pages import *
 
 
 class TestsAdminPage:
 
+    @allure.title("Авторизация на странице /administration")
     def test_success_login(self, driver, username, password):
         admin_page = LoginAdminPage(driver)
         admin_page.open_admin_page()
@@ -13,6 +14,7 @@ class TestsAdminPage:
 
         assert admin_page.user_profile_is_visible()
 
+    @allure.title("Logout на странице /administration")
     def test_success_logout(self, driver, username, password):
         admin_page = LoginAdminPage(driver)
         self.test_success_login(driver, username, password)

@@ -2,6 +2,7 @@ import time
 
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
+import allure
 
 
 class MainPage(BasePage):
@@ -17,30 +18,36 @@ class MainPage(BasePage):
 
     def open_dropdown_menu_currency(self):
         """ Открыть список валют"""
-        button = self.element_is_visible(self.LIST_CURRENCY)
-        self.scroll_to_element_and_click(button)
+        with allure.step(f"Открываем список валют"):
+            button = self.element_is_visible(self.LIST_CURRENCY)
+            self.scroll_to_element_and_click(button)
 
     def click_eur_currency(self):
         """ Выбрать валюту EUR"""
-        button = self.element_is_visible(self.EURO_LINK)
-        self.scroll_to_element_and_click(button)
+        with allure.step(f"Выбираем валюту EUR"):
+            button = self.element_is_visible(self.EURO_LINK)
+            self.scroll_to_element_and_click(button)
 
     def click_usd_currency(self):
         """ Выбрать валюту USD"""
-        button = self.element_is_visible(self.USD_LINK)
-        self.scroll_to_element_and_click(button)
+        with allure.step(f"Выбираем валюту USD"):
+            button = self.element_is_visible(self.USD_LINK)
+            self.scroll_to_element_and_click(button)
 
     def get_currency(self):
         """ Получить значение валюты на главной странице"""
-        currency = self.wait_for_element(self.CURRENCY)
-        return currency
+        with allure.step(f"Получаем значение валюты на главной странице"):
+            currency = self.wait_for_element(self.CURRENCY)
+            return currency
 
     def check_element_logo(self):
         """ наличие логотипа на странице """
-        self.driver.find_element(*self.LOGO)
-        return True
+        with allure.step(f"Находим элемент LOGO на странице"):
+            self.driver.find_element(*self.LOGO)
+            return True
 
     def check_element_currency(self):
         """ наличие кнопки смены валюты """
-        self.driver.find_element(*self.LIST_CURRENCY)
-        return True
+        with allure.step(f"Находим элемент список валют на странице"):
+            self.driver.find_element(*self.LIST_CURRENCY)
+            return True

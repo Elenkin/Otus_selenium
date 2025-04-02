@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
+import allure
 
 
 class ProductPage(BasePage):
@@ -9,14 +10,17 @@ class ProductPage(BasePage):
 
     def open_page_product(self):
         """ Открываем страницу продукта указанную в PATH"""
-        self.driver.get(self.driver.url + self.PATH)
+        with allure.step(f"Открываем страницу продукта указанную в PATH"):
+            self.driver.get(self.driver.url + self.PATH)
 
     def check_element_price_of_page(self):
         """ Проверка наличия элемента PRICE на странице PATH"""
-        element = self.element_is_visible(self.PRICE)
-        return element
+        with allure.step(f"Проверяем наличие элемента PRICE на странице"):
+            element = self.element_is_visible(self.PRICE)
+            return element
 
     def click_button_cart(self):
         """ Нажать кнопку Добавить в корзину"""
-        button_cart = self.element_is_visible(self.PRODUCT_BUTTON_CART)
-        self.scroll_to_element_and_click(button_cart)
+        with allure.step(f"Нажимаем кнопку Добавить в корзину"):
+            button_cart = self.element_is_visible(self.PRODUCT_BUTTON_CART)
+            self.scroll_to_element_and_click(button_cart)

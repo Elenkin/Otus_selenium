@@ -1,4 +1,4 @@
-import pytest
+import allure
 from conftest import *
 from pages.registration_page import RegisterPage
 from faker import Faker
@@ -12,8 +12,9 @@ password = f.password()
 
 class TestsRegister:
 
+    @allure.title("Регистрация нового пользователя в магазине opencart")
     def test_registration_user(self, driver):
-        """Регистрация нового пользователя в магазине opencart"""
+
         register_page = RegisterPage(driver)
         register_page.open_register_page()
         register_page.fill_form_register(firstname, lastname, email, password)

@@ -1,5 +1,10 @@
+import logging
 import pytest
+import allure
+import json
 import mysql.connector
+import os
+import datetime
 
 from selenium import webdriver
 from selenium.webdriver.chromium.service import ChromiumService
@@ -11,6 +16,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
     parser.addoption("--headless", action="store_true")
     parser.addoption("--url", action="store", default="http://192.168.31.240:8081")
+    parser.addoption("--log_level", "-L", default="INFO")
 
 @pytest.fixture
 def username():
@@ -30,12 +36,30 @@ def driver(request):
     browser_name = request.config.getoption("browser")
     headless = request.config.getoption("headless")  # True - False
     base_url = request.config.getoption("--url")
+    log_level = request.config.getoption("--log_level")
+    test_name = request.node.name
+    logger = logging.getLogger(test_name)
+
+    # Создаём каталог log, проверяем существует ли папка (exist_ok=True)
+    os.makedirs("log", exist_ok=True)
+    #Создаём обработчик для записи журналов в файл. Файл будет называться по имени теста
+    file_handler = logging.FileHandler(f"log/{test_name}.log", encoding='utf-8')
+    #Задаём формат для журналов
+    file_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+    logger.addHandler(file_handler)
+    logger.setLevel(log_level)
+    logger.info("===> Test '%s' started at %s" % (test_name, datetime.datetime.now()))
+
 
     if browser_name in ["chrome", "ch"]:
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
         driver = webdriver.Chrome(options=options)
+        allure.attach(
+            name=driver.session_id,
+            body=json.dumps(driver.capabilities, indent=4, ensure_ascii=False),
+            attachment_type=allure.attachment_type.JSON)
     elif browser_name in ["firefox", "ff"]:
         options = FFOptions()
         if headless:
@@ -55,16 +79,16 @@ def driver(request):
 
     driver.maximize_window()
 
-    # yield driver
-    #
-    # driver.quit()
     request.addfinalizer(driver.close)
-    #не явное ожидание элемента 2 секунды
+    # не явное ожидание элемента 2 секунды
     driver.implicitly_wait(2)
-    # driver.get(url)
     driver.url = base_url
+    driver.logger = logger
+    driver.log_level = logging.DEBUG
+    # yield driver
 
     return driver
+
 
 @pytest.fixture(scope="session")
 def db_connection(request):

@@ -17,6 +17,7 @@ def pytest_addoption(parser):
     parser.addoption("--headless", action="store_true")
     parser.addoption("--url", action="store", default="http://192.168.31.240:8081")
     parser.addoption("--log_level", "-L", default="INFO")
+    parser.addoption("--executor", action="store", default=None),
 
 @pytest.fixture
 def username():
@@ -39,6 +40,7 @@ def driver(request):
     log_level = request.config.getoption("--log_level")
     test_name = request.node.name
     logger = logging.getLogger(test_name)
+    executor = request.config.getoption("--executor")
 
     # Создаём каталог log, проверяем существует ли папка (exist_ok=True)
     os.makedirs("log", exist_ok=True)
@@ -55,11 +57,40 @@ def driver(request):
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
-        driver = webdriver.Chrome(options=options)
-        allure.attach(
-            name=driver.session_id,
-            body=json.dumps(driver.capabilities, indent=4, ensure_ascii=False),
-            attachment_type=allure.attachment_type.JSON)
+        # Если указан executor, запускаем на удалённом сервере Selenium иначе запуск локально
+        # (pytest --executor=192.168.31.240 --browser=chrome)
+        if executor:
+                caps = {
+                    "browserName": browser_name,
+                    #Можно добавить другие опции selenoid, если это необходимо
+                    # "browserVersion": version,
+                    # "selenoid:options": {
+                    #     "enableVNC": vnc,
+                    #     "name": request.node.name,
+                    #     "screenResolution": "1280x2000",
+                    #     "enableVideo": video,
+                    #     "enableLog": logs,
+                    #     "timeZone": "Europe/Moscow",
+                    #     "env": ["LANG=ru_RU.UTF-8", "LANGUAGE=ru:en", "LC_ALL=ru_RU.UTF-8"]
+                    # },
+                    # "acceptInsecureCerts": True,
+                }
+
+                for k, v in caps.items():
+                    options.set_capability(k, v)
+
+                driver = webdriver.Remote(
+                    command_executor=f"http://{executor}:4444/wd/hub",
+                    options=options
+                )
+        else:
+            driver = webdriver.Chrome(options=options)
+            allure.attach(
+                name=driver.session_id,
+                body=json.dumps(driver.capabilities, indent=4, ensure_ascii=False),
+                attachment_type=allure.attachment_type.JSON)
+
+
     elif browser_name in ["firefox", "ff"]:
         options = FFOptions()
         if headless:

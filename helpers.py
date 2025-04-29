@@ -25,3 +25,15 @@ def create_random_user(connection):
     connection.commit()
     print(f"создан {email} пароль: test")
     return email, "test"
+
+def get_user_customer_id(connection):
+    email = create_random_user(connection)[0]
+    query_read = f"SELECT customer_id FROM oc_customer WHERE email='{email}'"
+    cursor = connection.cursor()
+
+    cursor.execute(query_read)
+    result = cursor.fetchone()  # Получаем первую строку результата
+    customer_id = result[0] if result else None
+    print(f"Создан email: {email}, пароль: test, customer_id: {customer_id}")
+
+    return customer_id

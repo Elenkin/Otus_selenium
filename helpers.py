@@ -26,7 +26,7 @@ def create_random_user(connection):
     print(f"создан {email} пароль: test")
     return email, "test"
 
-def get_user_customer_id(connection):
+def create_user_and_get_customer_id(connection):
     email = create_random_user(connection)[0]
     query_read = f"SELECT customer_id FROM oc_customer WHERE email='{email}'"
     cursor = connection.cursor()

@@ -1,10 +1,10 @@
-from helpers import get_user_customer_id
+from helpers import create_user_and_get_customer_id
 from config import config
 
 
 def test_delete_user(db_connection):
     """ Проверка что удаления существующего клиента"""
-    customer_id = get_user_customer_id(db_connection)
+    customer_id = create_user_and_get_customer_id(db_connection)
     print(f"Создан customer_id: {customer_id}")
 
     # Формируем запрос удаления по customer_id

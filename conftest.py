@@ -121,14 +121,3 @@ def driver(request):
     return driver
 
 
-@pytest.fixture(scope="session")
-def db_connection(request):
-    connection = mysql.connector.connect(
-        user='bn_opencart',
-        password='',
-        host='127.0.0.1',
-        database='bitnami_opencart',
-        port='3306'
-    )
-    request.addfinalizer(connection.close)
-    return connection

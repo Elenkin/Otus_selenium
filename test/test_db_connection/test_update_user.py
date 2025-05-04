@@ -1,9 +1,9 @@
 from config import config
-from helpers import get_user_customer_id, random_string, random_email, random_phone
+from helpers import create_user_and_get_customer_id, random_string, random_email, random_phone
 
 
 def test_update_user(db_connection):
-    customer_id = get_user_customer_id(db_connection)
+    customer_id = create_user_and_get_customer_id(db_connection)
     print(f"Создан customer_id: {customer_id}")
 
     new_firstname = random_string()

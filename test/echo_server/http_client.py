@@ -1,11 +1,11 @@
 import socket
 
-address_and_port = ("192.168.31.46", 40401)
+address_and_port = ("192.168.31.240", 40401)
 
 # Запрос Клиента
 http_request = (
         f"GET /?status=1010  HTTP/1.0\r\n"
-        f"Host: 192.168.31.46\r\n"
+        f"Host: 192.168.31.240\r\n"
         f"User-Agent: CustomClient/1.0\r\n"
         f"Accept: */*\r\n"
         f"Content-Type: application/json\r\n"

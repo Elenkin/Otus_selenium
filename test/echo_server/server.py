@@ -2,7 +2,7 @@ import socket
 from http import HTTPStatus
 from urllib.parse import urlparse, parse_qs
 
-address_and_port = ("192.168.31.46", 40401)
+address_and_port = ("192.168.31.240", 40401)
 
 def handle_client_connection(client_socket, client_address):
     try:
@@ -27,9 +27,9 @@ def handle_client_connection(client_socket, client_address):
             try:
                 status_code = HTTPStatus(int(status_value))
             except ValueError:
-                status_code = HTTPStatus.BAD_REQUEST  # Если статус невалиден, возвращаем 400 Bad Request
+                status_code = HTTPStatus.OK  # если параметр не валидный то отдавать 200
             except AttributeError:
-                status_code = HTTPStatus.BAD_REQUEST  # Если статус не найден, тоже возвращаем 400
+                status_code = HTTPStatus.OK  # если параметр не передан то отдавать 200
 
         # Список для хранения заголовков
         headers = []
